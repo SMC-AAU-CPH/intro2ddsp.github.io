@@ -1,0 +1,591 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Neural Audio Synthesis &#8212; Introduction to Audio Synthesizer Programming</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'background/neural-audio-synthesis';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="What is DDSP?" href="what-is-ddsp.html" />
+    <link rel="prev" title="Introduction" href="../intro.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/intro2ddsp_logo_horiz.png" class="logo__image only-light" alt="Introduction to Audio Synthesizer Programming - Home"/>
+    <script>document.write(`<img src="../_static/intro2ddsp_logo_horiz.png" class="logo__image only-dark" alt="Introduction to Audio Synthesizer Programming - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Introduction
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Background</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Neural Audio Synthesis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what-is-ddsp.html">What is DDSP?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks_applications.html">Tasks and Applications</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">First Steps</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../first-steps/pytorch_tutorial.html">PyTorch Bootcamp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../first-steps/diff_gain.html">A Differentiable Gain Control</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Synthesisers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../synths/introduction.html">Digital Synthesizer Modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../synths/oscillator.html">Writing an Oscillator in PyTorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../synths/additive.html">Additive Synthesis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../synths/harmonic_optimize.html">Optimizing a Harmonic Synthesizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../synths/harmonic_results.html">Harmonic Synthesis Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../synths/libraries.html">Differentiable Synthesis Libraries</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Filters</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../filters/index.html">Digital Filter Modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../filters/fir-intro.html">Finite Impulse Response</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../filters/fir-optim.html">Differentiable FIR Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../filters/iir_intro.html">Infinite Impulse Response (IIR) Systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../filters/iir_impl.html">Differentiable Implementation of IIR Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../filters/iir_torch.html">Implementing Differentiable IIR in PyTorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../filters/sf.html">Speech Decomposition with Source Filter Model</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Physical Modeling</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../physical-modeling/index.html">Physical Modeling and DDSP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physical-modeling/sho.html">The Simple Harmonic Oscillator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physical-modeling/many_oscillators.html">Rigid objects and modal analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physical-modeling/wave_equation.html">The Wave Equation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Wrapping Up</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/benhayes/intro2ddsp" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/benhayes/intro2ddsp/issues/new?title=Issue%20on%20page%20%2Fbackground/neural-audio-synthesis.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/background/neural-audio-synthesis.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Neural Audio Synthesis</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-brief-history-of-audio-synthesis">A Brief History of Audio Synthesis</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deep-learning-arrives">Deep Learning Arrives</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="neural-audio-synthesis">
+<h1>Neural Audio Synthesis<a class="headerlink" href="#neural-audio-synthesis" title="Permalink to this heading">#</a></h1>
+<section id="a-brief-history-of-audio-synthesis">
+<h2>A Brief History of Audio Synthesis<a class="headerlink" href="#a-brief-history-of-audio-synthesis" title="Permalink to this heading">#</a></h2>
+<p>Audio synthesis, the artificial production of sound, has been an active field of research for over a century.
+Early inventions included entirely new categories of musical instrument, such as Cahill’s <a class="reference external" href="https://en.wikipedia.org/wiki/Telharmonium">Telharmonium</a> and the <a class="reference external" href="https://en.wikipedia.org/wiki/Theremin">Theremin</a>, and the first systems for artificial speech production, such as Dudley’s <a class="reference external" href="https://ccrma.stanford.edu/~jos/pasp/Dudley_s_Vocoder.html">Vocoder</a>.</p>
+<figure class="align-default" id="telharmonium">
+<a class="reference internal image-reference" href="../_images/telharmonium.jpg"><img alt="../_images/telharmonium.jpg" src="../_images/telharmonium.jpg" style="height: 500px;" /></a>
+<figcaption>
+<p><span class="caption-number">Fig. 1 </span><span class="caption-text">Thaddeus Cahill’s Telharmonium was one of the first musical instruments to produce sound electronically — an early synthesiser.</span><a class="headerlink" href="#telharmonium" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>As electronic components became smaller and more reliable, synthesisers followed suit.
+During the 1960s, Moog &amp; Buchla’s designs laid the framework for new categories of electronic musical instrument, which went on to define entirely new genres and aesthetics.
+At the same time, the first digital vocal tract models <span id="id1">[<a class="reference internal" href="../bibliography.html#id23" title="J. L. Kelly and C. C. Lochbaum. Speech synthesis. In Proceedings of the Fourth International Congress on Acoustics, 1–4. Copenhagen, September 1962.">KL62</a>]</span> were produced.
+The latter part of the 20th century saw a proliferation of research into digital methods for sound synthesis, built on advances in both digital signal processing and numerical methods.
+Whilst once the purview of specialist research laboratories and pioneering music composers, commercially available hardware and software synthesisers placed the technology in the hands of a much wider array of users, from touring bands to at-home hobbyists.
+Today, it is possible to simulate entire analog synthesisers on even modestly powerful personal computers.</p>
+<p>applications of audio synthesis have since come to permeate daily life, from music, through voice assistants, to the sound design in films, TV shows, video games, and even the cockpits of cars.</p>
+<figure class="align-default" id="arturia">
+<a class="reference internal image-reference" href="../_images/arturia.jpeg"><img alt="../_images/arturia.jpeg" src="../_images/arturia.jpeg" style="height: 500px;" /></a>
+<figcaption>
+<p><span class="caption-number">Fig. 2 </span><span class="caption-text"><a class="reference external" href="https://www.arturia.com/products/software-instruments/prophet-5-v/overview">Arturia’s software model</a> of the Sequential Circuits Prophet 5 simulates the behaviour of individual electronic components to produce a replication of the sound of the original.</span><a class="headerlink" href="#arturia" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="deep-learning-arrives">
+<h2>Deep Learning Arrives<a class="headerlink" href="#deep-learning-arrives" title="Permalink to this heading">#</a></h2>
+<p>In recent years, the field has undergone something of a technological revolution, with the emergence of deep learning as a viable tool for audio synthesis.
+The publication of WaveNet <span id="id2">[<a class="reference internal" href="../bibliography.html#id32" title="Aäron van den Oord, Sander Dieleman, Heiga Zen, Karen Simonyan, Oriol Vinyals, Alexander Graves, Nal Kalchbrenner, Andrew Senior, and Koray Kavukcuoglu. Wavenet: a generative model for raw audio. In Arxiv. 2016. URL: https://arxiv.org/abs/1609.03499.">vdODZ+16</a>]</span>, an autoregressive neural network which produced a quantised audio signal sample-by-sample, first illustrated this possiblity.</p>
+<p>Over the following years, new methods for neural audio synthesis abounded, from refinements to WaveNet <span id="id3">[<a class="reference internal" href="../bibliography.html#id31" title="Aaron van den Oord, Yazhe Li, Igor Babuschkin, Karen Simonyan, Oriol Vinyals, Koray Kavukcuoglu, George van den Driessche, Edward Lockhart, Luis Cobo, Florian Stimberg, Norman Casagrande, Dominik Grewe, Seb Noury, Sander Dieleman, Erich Elsen, Nal Kalchbrenner, Heiga Zen, Alex Graves, Helen King, Tom Walters, Dan Belov, and Demis Hassabis. Parallel WaveNet: fast high-fidelity speech synthesis. In Jennifer Dy and Andreas Krause, editors, Proceedings of the 35th International Conference on Machine Learning, volume 80 of Proceedings of Machine Learning Research, 3918–3926. PMLR, 10–15 Jul 2018. URL: https://proceedings.mlr.press/v80/oord18a.html.">vdOLB+18</a>]</span> to the application of entirely different classes of generative model <span id="id4">[<a class="reference internal" href="../bibliography.html#id11" title="Jesse Engel, Kumar Krishna Agrawal, Shuo Chen, Ishaan Gulrajani, Chris Donahue, and Adam Roberts. GANSynth: adversarial neural audio synthesis. In International Conference on Learning Representations. 2019. URL: https://openreview.net/forum?id=H1xQVn09FX.">EAC+19</a>]</span>, including generative adversarial networks (GANs), variational autoencoders, flow-based models, and more recently denoising diffusion probabilistic models.</p>
+<p>Nonetheless, audio signals are inherently high-dimensional, exhibit multi-scale temporal inter-dependency, and have a strikingly non-intuitive relationship with perception — characteristics which are decidedly non-trivial to learn directly from data.
+These properties underlie a number of challenging-to-resolve phenomena when modelling audio with neural networks.
+Upsampling layers, for example, crucial components of workhorse architectures such as GANs and autoencoders, were found to cause undesirable signal artifacts <span id="id5">[<a class="reference internal" href="../bibliography.html#id33" title="Jordi Pons, Santiago Pascual, Giulio Cengarle, and Joan Serrà. Upsampling artifacts in neural audio synthesis. In ICASSP 2021 - 2021 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP), volume, 3005–3009. 2021. doi:10.1109/ICASSP39728.2021.9414913.">PPCS21</a>]</span>.
+Similarly, frame-based estimation of audio signals was also found to be more challenging than might naïvely be assumed, due to the difficulty of ensuring phase coherence between successive frames, where frame lengths are independent of the frequencies contained in a signal <span id="id6">[<a class="reference internal" href="../bibliography.html#id11" title="Jesse Engel, Kumar Krishna Agrawal, Shuo Chen, Ishaan Gulrajani, Chris Donahue, and Adam Roberts. GANSynth: adversarial neural audio synthesis. In International Conference on Learning Representations. 2019. URL: https://openreview.net/forum?id=H1xQVn09FX.">EAC+19</a>]</span>.</p>
+<p>Today, well-trained GAN and diffusion vocoders are capable of overcoming these issues in certain domains, given sufficient model capacity and quantities of data.
+However, parallel line of research also emerged, which sought to address them by instilling models with inductive biases rooted in our prior knowledge of the properties of audio signals</p>
+<p>A parallel lineage of research emerged, however, which seeks to reduce the burden on models to <em>learn</em> these signal characteristics by constraining the model’s outputs so that they were already biased towards them.
+This is achieved by directly incorporating signal processing operations with known behaviour into the model, which we shall discuss in the next section.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./background"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../intro.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Introduction</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="what-is-ddsp.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">What is DDSP?</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-brief-history-of-audio-synthesis">A Brief History of Audio Synthesis</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deep-learning-arrives">Deep Learning Arrives</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Ben Hayes, Jordie Shier, Chin-Yun Yu, David Südholt, Rodrigo Diaz
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

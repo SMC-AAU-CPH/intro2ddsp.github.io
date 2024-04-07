@@ -1,0 +1,52 @@
+Traceback (most recent call last):
+  File "/home/runner/.local/lib/python3.10/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/home/runner/.local/lib/python3.10/site-packages/nbclient/client.py", line 1314, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/home/runner/.local/lib/python3.10/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+  File "/usr/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/home/runner/.local/lib/python3.10/site-packages/nbclient/client.py", line 709, in async_execute
+    await self.async_execute_cell(
+  File "/home/runner/.local/lib/python3.10/site-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/home/runner/.local/lib/python3.10/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+lpc_order = 18
+frame_length = 1024
+
+lpc = diffsptk.LPC(lpc_order, frame_length)
+gain, coeffs = lpc(target).split([1, lpc_order], dim=-1)
+print(f"Gain: {gain.item()}")
+------------------
+
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mAssertionError[0m                            Traceback (most recent call last)
+Cell [0;32mIn[6], line 4[0m
+[1;32m      1[0m lpc_order [38;5;241m=[39m [38;5;241m18[39m
+[1;32m      2[0m frame_length [38;5;241m=[39m [38;5;241m1024[39m
+[0;32m----> 4[0m lpc [38;5;241m=[39m [43mdiffsptk[49m[38;5;241;43m.[39;49m[43mLPC[49m[43m([49m[43mlpc_order[49m[43m,[49m[43m [49m[43mframe_length[49m[43m)[49m
+[1;32m      5[0m gain, coeffs [38;5;241m=[39m lpc(target)[38;5;241m.[39msplit([[38;5;241m1[39m, lpc_order], dim[38;5;241m=[39m[38;5;241m-[39m[38;5;241m1[39m)
+[1;32m      6[0m [38;5;28mprint[39m([38;5;124mf[39m[38;5;124m"[39m[38;5;124mGain: [39m[38;5;132;01m{[39;00mgain[38;5;241m.[39mitem()[38;5;132;01m}[39;00m[38;5;124m"[39m)
+
+File [0;32m~/.local/lib/python3.10/site-packages/diffsptk/modules/lpc.py:41[0m, in [0;36mLinearPredictiveCodingAnalysis.__init__[0;34m(self, frame_length, lpc_order)[0m
+[1;32m     37[0m [38;5;28;01mdef[39;00m [38;5;21m__init__[39m([38;5;28mself[39m, frame_length, lpc_order):
+[1;32m     38[0m     [38;5;28msuper[39m(LinearPredictiveCodingAnalysis, [38;5;28mself[39m)[38;5;241m.[39m[38;5;21m__init__[39m()
+[1;32m     40[0m     [38;5;28mself[39m[38;5;241m.[39mlpc [38;5;241m=[39m nn[38;5;241m.[39mSequential(
+[0;32m---> 41[0m         [43mAutocorrelation[49m[43m([49m[43mframe_length[49m[43m,[49m[43m [49m[43mlpc_order[49m[43m)[49m,
+[1;32m     42[0m         LevinsonDurbin(lpc_order),
+[1;32m     43[0m     )
+
+File [0;32m~/.local/lib/python3.10/site-packages/diffsptk/modules/acorr.py:46[0m, in [0;36mAutocorrelation.__init__[0;34m(self, frame_length, acr_order, norm, estimator)[0m
+[1;32m     43[0m [38;5;28;01mdef[39;00m [38;5;21m__init__[39m([38;5;28mself[39m, frame_length, acr_order, norm[38;5;241m=[39m[38;5;28;01mFalse[39;00m, estimator[38;5;241m=[39m[38;5;124m"[39m[38;5;124mnone[39m[38;5;124m"[39m):
+[1;32m     44[0m     [38;5;28msuper[39m(Autocorrelation, [38;5;28mself[39m)[38;5;241m.[39m[38;5;21m__init__[39m()
+[0;32m---> 46[0m     [38;5;28;01massert[39;00m [38;5;241m0[39m [38;5;241m<[39m[38;5;241m=[39m acr_order [38;5;241m<[39m frame_length
+[1;32m     48[0m     [38;5;28mself[39m[38;5;241m.[39mframe_length [38;5;241m=[39m frame_length
+[1;32m     49[0m     [38;5;28mself[39m[38;5;241m.[39macr_order [38;5;241m=[39m acr_order
+
+[0;31mAssertionError[0m: 
+
